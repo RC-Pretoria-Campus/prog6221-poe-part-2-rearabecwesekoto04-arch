@@ -1,0 +1,145 @@
+CyberBot - Cybersecurity Awareness Chatbot
+PROG Part 2 | IIE | 2026
+
+Description
+
+CyberBot is a WinForms GUI Cybersecurity Awareness Chatbot built with C# .NET 8.  
+It expands the Part 1 console chatbot into a fully interactive graphical application that recognises cybersecurity keywords, detects user sentiment, remembers user details, and provides dynamic varied responses.
+
+Features
+
+Feature | Description
+
+GUI Interface Dark-themed WinForms window with ASCII art logo, colour-coded chat, side panel buttons, and voice greeting
+Keyword Recognition | Responds to 65+ cybersecurity topics including phishing, malware, passwords, VPNs, encryption, and more 
+Random Responses | 5 varied responses per major topic — no two conversations feel the same 
+Conversation Flow | Handles follow-up phrases like "tell me more", "another tip", "explain more" without restarting 
+Memory & Recall | Remembers your name and favourite cybersecurity topic to personalise responses 
+Sentiment Detection | Detects 15 moods (worried, curious, frustrated, overwhelmed, etc.) and adjusts responses accordingly 
+Quiz | 3-round quiz with 15 questions across Basics, Threats, and Privacy topics 
+Security Tips | 20 rotating security tips accessible via the side panel or by typing `tip` 
+Error Handling | Rotating fallback responses for unrecognised input — never crashes on unexpected input 
+
+Project Structure
+
+
+CybersecurityChatbot/
+
+├─GUI/
+  ├── ChatForm.cs          Main WinForms GUI window
+ └── QuizForm.cs          GUI quiz window (3 rounds, exit confirmation)
+
+├── Core/
+  ├── GUIChatEngine.cs     Core chat logic — state machine, memory, sentiment, responses
+   └── QuizEngine.cs        Console quiz engine (Part 1, still compiles)
+
+├── Data/
+   ├── ResponseBank.cs      All keyword responses, tips, commands, conversational replies
+  └── QuizBank.cs          15 quiz questions in 3 rounds
+
+── Program.cs              Entry point — launches ChatForm
+
+── PROG_Part1/              Legacy Part 1 classes (ChatEngine, DisplayHelper)
+
+How to Run
+Requirements
+- Windows OS
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- Visual Studio 2022 (or later) or Visual Studio Code with C# extension
+
+Steps
+
+1.Clone the repository
+   bash
+   git clone https://github.com/rearabecwesekoto04/PROG_Part2.git
+   cd PROG_Part2
+
+
+2. Open the project  
+   Open `CybersecurityChatbot.sln` in Visual Studio.
+
+3. Build the project  
+   Press `Ctrl + Shift + B` or go to Build → Build Solution.
+
+4. Run the application  
+   Press `F5` or click the Start button.  
+   The CyberBot GUI window will launch automatically.
+
+Usage
+
+Getting Started
+1. Launch the application — a voice greeting will play automatically.
+2. Type your name in the input box and press Enter or click SEND.
+3. Enter your favourite cybersecurity topic (e.g. `phishing`, `passwords`, `privacy`).
+4. Start chatting! Ask any cybersecurity question or use the commands below.
+
+Commands
+
+| Command | Description |
+|---|---|
+| `help` | Show all available commands |
+| `topics` | List all 65+ cybersecurity topics (select by number) |
+| `tip` | Get the next security tip (cycles through 20 tips) |
+| `quiz` | Launch the cybersecurity quiz |
+| `history` | View your conversation history |
+| `clear` | Clear the conversation history |
+| `exit` | Exit the chatbot (confirmation dialog shown) |
+
+Example Interactions
+
+You:  Tell me about phishing
+Bot:  Phishing attacks trick you into revealing sensitive info via fake 
+      emails or websites. Always verify the sender's address...
+
+You:  I'm worried about online scams
+Bot:  I understand you're worried — here's what you need to know:
+      If an offer sounds too good to be true, it almost certainly is...
+
+You:  Tell me more
+Bot:  Here's another tip about phishing, Rea:
+      Hover over links before clicking to see the real URL...
+
+You:  What do I like?
+Bot:  As someone interested in phishing, Rea, here's something relevant...
+
+
+Technologies Used
+
+- Language: C# 
+- Framework: .NET 8
+- UI: Windows Forms (WinForms)
+- Voice: System.Speech.Synthesis (SpeechSynthesizer)
+- Data Structures: Dictionary, List (used throughout for all responses, moods, commands, colours)
+- Patterns: OOP, State Machine, Dictionary of Delegates (Func\<string\>)
+
+OOP & Code Design Highlights
+
+- Dictionary of Delegates — commands map directly to handler methods (`Func<string>`), no long if/else chains
+- Colour Dictionary — `Dictionary<string, Color>` manages the entire UI colour palette; one change updates everything
+- Mood Dictionaries — three separate dictionaries handle mood detection, full mood responses, and short mood prefixes
+- State Machine — `ChatState` enum controls conversation flow (`AwaitingName → AwaitingFavTopic → Active`)
+- Thread Safety — voice greeting runs on `Task.Run()`; `InvokeRequired` ensures UI updates happen on the correct thread
+- Exit Fix — `_forceClose` flag in `QuizForm` prevents `OnFormClosing` from blocking programmatic `Close()` calls
+
+Multimedia Files
+
+| File | Description |
+|---|---|
+| `README.md` | This file |
+| `PROG_Part2_Presentation.pptx` | Video presentation slide deck |
+
+> Note: The voice greeting uses the system's built-in text-to-speech engine.  
+> No external audio files (WAV) are required — voice is generated at runtime via `SpeechSynthesizer`.
+
+GitHub Releases
+
+| Version | Description |
+|---|---|
+| `v1.0` | Part 1 console chatbot — keyword responses, quiz, sentiment detection |
+| `v1.1` | Part 2 initial GUI — WinForms ChatForm, GUIChatEngine, ResponseBank |
+| `v2.0` | Part 2 complete — QuizForm, memory/recall, 15-mood sentiment, exit fix |
+
+Author
+Tlhologelo Rearabecwe Sekoto  
+IIE Student — PROG Module  
+2026
