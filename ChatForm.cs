@@ -86,7 +86,7 @@ namespace CybersecurityChatbot.GUI
             WireEvents();
         }
 
-        // ─── Header ──────────────────────────────────────────────────────
+        // Header
         private void BuildHeader()
         {
             _headerPanel = new Panel
@@ -133,7 +133,7 @@ namespace CybersecurityChatbot.GUI
             Controls.Add(_headerPanel);
         }
 
-        // ─── Side Panel ───────────────────────────────────────────────────
+        // Side Panel 
         private void BuildSidePanel()
         {
             _sidePanel = new Panel
@@ -240,7 +240,7 @@ namespace CybersecurityChatbot.GUI
             };
         }
 
-        // ─── Chat Area ────────────────────────────────────────────────────
+        // Chat Area
         private void BuildChatArea()
         {
             _chatDisplay = new RichTextBox
@@ -260,7 +260,7 @@ namespace CybersecurityChatbot.GUI
             _chatDisplay.BringToFront();
         }
 
-        // ─── Input Area ───────────────────────────────────────────────────
+        // Input Area
         private void BuildInputArea()
         {
             _inputPanel = new Panel
@@ -346,7 +346,7 @@ namespace CybersecurityChatbot.GUI
             };
         }
 
-        // ─── Wire Events ──────────────────────────────────────────────────
+        // Wire Events
         private void WireEvents()
         {
             // Send on button click or Enter key
@@ -403,9 +403,7 @@ namespace CybersecurityChatbot.GUI
             _exitButton.MouseLeave += (s, e) => _exitButton.BackColor = _colours["exit"];
         }
 
-        // ════════════════════════════════════════════════════════════════
         // WELCOME & GREETING
-        // ════════════════════════════════════════════════════════════════
 
         private void ShowWelcome()
         {
@@ -466,9 +464,7 @@ namespace CybersecurityChatbot.GUI
             });
         }
 
-        // ════════════════════════════════════════════════════════════════
         // INPUT HANDLING
-        // ════════════════════════════════════════════════════════════════
 
         private void OnSend(object? sender, EventArgs e)
         {
@@ -532,9 +528,8 @@ namespace CybersecurityChatbot.GUI
             ScrollToBottom();
         }
 
-        // ════════════════════════════════════════════════════════════════
+       
         // EXIT CONFIRMATION
-        // ════════════════════════════════════════════════════════════════
 
         /// <summary>Called when the EXIT button is clicked.</summary>
         private void OnExitClicked(object? sender, EventArgs e)
@@ -633,9 +628,8 @@ namespace CybersecurityChatbot.GUI
             // If No — do nothing, return to chat
         }
 
-        // ════════════════════════════════════════════════════════════════
         // QUIZ LAUNCHER
-        // ════════════════════════════════════════════════════════════════
+       
 
         private void LaunchQuiz()
         {
@@ -643,9 +637,7 @@ namespace CybersecurityChatbot.GUI
             quizForm.ShowDialog(this);
         }
 
-        // ════════════════════════════════════════════════════════════════
         // CHAT DISPLAY HELPERS
-        // ════════════════════════════════════════════════════════════════
 
         public void AppendBotMessage(string message)
         {
