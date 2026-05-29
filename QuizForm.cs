@@ -14,7 +14,7 @@ namespace CybersecurityChatbot.GUI
     /// </summary>
     public class QuizForm : Form
     {
-        // ─── UI Controls ─────────────────────────────────────────────────
+        // UI Controls
         private Label _roundLabel = null!;
         private Label _questionNumLabel = null!;
         private Label _scoreLabel = null!;
@@ -26,7 +26,7 @@ namespace CybersecurityChatbot.GUI
         private Button _exitButton = null!;
         private ProgressBar _progressBar = null!;
 
-        // ─── State ────────────────────────────────────────────────────────
+        // State 
         private readonly string _userName;
         private int _currentRound = 0;
         private int _currentQ = 0;
@@ -38,7 +38,7 @@ namespace CybersecurityChatbot.GUI
 
         private List<KeyValuePair<int, QuizQuestion>> _currentQuestions = new();
 
-        // ─── Colour Palette (Dictionary) ─────────────────────────────────
+        // Colour Palette (Dictionary)
         private readonly Dictionary<string, Color> _colours = new Dictionary<string, Color>
         {
             { "bgDark",    Color.FromArgb(10,  14,  20)  },
@@ -53,7 +53,7 @@ namespace CybersecurityChatbot.GUI
             { "hover",     Color.FromArgb(0,   60,  55)  },
         };
 
-        // ─── Constructor ─────────────────────────────────────────────────
+        // Constructor
         public QuizForm(string userName)
         {
             _userName = userName;
@@ -61,9 +61,8 @@ namespace CybersecurityChatbot.GUI
             LoadRound(_currentRound);
         }
 
-        // ════════════════════════════════════════════════════════════════
         // UI INIT
-        // ════════════════════════════════════════════════════════════════
+        
 
         private void InitialiseComponent()
         {
@@ -79,7 +78,7 @@ namespace CybersecurityChatbot.GUI
             // Intercept X button
             FormClosing += OnFormClosing;
 
-            // ── Header ──
+            // Header 
             var header = new Label
             {
                 Text = $"  CYBERSECURITY QUIZ  —  {_userName.ToUpper()}",
@@ -91,7 +90,7 @@ namespace CybersecurityChatbot.GUI
                 TextAlign = ContentAlignment.MiddleLeft
             };
 
-            // ── Progress bar ──
+            // Progress bar
             _progressBar = new ProgressBar
             {
                 Dock = DockStyle.Top,
@@ -104,7 +103,7 @@ namespace CybersecurityChatbot.GUI
                 ForeColor = _colours["accent"]
             };
 
-            // ── Labels using dictionary: key → (text, location, size, colour, font) ──
+            // Labels using dictionary: key → (text, location, size, colour, font)
             var labelDefs = new Dictionary<string, (string text, Point loc, Size size, string colour, float fontSize)>
             {
                 { "round",    ( "",                  new Point(20, 58),  new Size(500, 20), "accentAlt", 9.5f ) },
@@ -143,7 +142,7 @@ namespace CybersecurityChatbot.GUI
                 Controls.Add(lbl);
             }
 
-            // ── Options panel ──
+            // Options panel 
             _optionsPanel = new Panel
             {
                 Location = new Point(20, 175),
@@ -151,7 +150,7 @@ namespace CybersecurityChatbot.GUI
                 BackColor = Color.Transparent
             };
 
-            // ── Action button (Next / See Results / Next Quiz / Close) ──
+            // Action button (Next / See Results / Next Quiz / Close) 
             _actionButton = new Button
             {
                 Text = "Next Question ▶",
@@ -167,7 +166,7 @@ namespace CybersecurityChatbot.GUI
             };
             _actionButton.Click += OnActionButton;
 
-            // ── Exit button ──
+            // Exit button 
             _exitButton = new Button
             {
                 Text = "EXIT ✕",
@@ -191,9 +190,8 @@ namespace CybersecurityChatbot.GUI
             });
         }
 
-        // ════════════════════════════════════════════════════════════════
         // ROUND LOADING
-        // ════════════════════════════════════════════════════════════════
+        
 
         private void LoadRound(int roundIndex)
         {
@@ -210,9 +208,7 @@ namespace CybersecurityChatbot.GUI
             LoadQuestion();
         }
 
-        // ════════════════════════════════════════════════════════════════
         // QUESTION LOADING
-        // ════════════════════════════════════════════════════════════════
 
         private void LoadQuestion()
         {
@@ -269,9 +265,7 @@ namespace CybersecurityChatbot.GUI
             }
         }
 
-        // ════════════════════════════════════════════════════════════════
         // ANSWER SELECTION
-        // ════════════════════════════════════════════════════════════════
 
         private void OnAnswerSelected(object? sender, EventArgs e)
         {
@@ -321,9 +315,7 @@ namespace CybersecurityChatbot.GUI
                 _actionButton.Text = isLastRound ? "See Final Results ▶" : "See Round Results ▶";
         }
 
-        // ════════════════════════════════════════════════════════════════
         // ACTION BUTTON
-        // ════════════════════════════════════════════════════════════════
 
         private void OnActionButton(object? sender, EventArgs e)
         {
@@ -340,9 +332,7 @@ namespace CybersecurityChatbot.GUI
             }
         }
 
-        // ════════════════════════════════════════════════════════════════
         // ROUND RESULTS
-        // ════════════════════════════════════════════════════════════════
 
         private void ShowRoundResults()
         {
@@ -379,9 +369,7 @@ namespace CybersecurityChatbot.GUI
             _actionButton.Click += OnNextQuiz;
         }
 
-        // ════════════════════════════════════════════════════════════════
         // NEXT QUIZ
-        // ════════════════════════════════════════════════════════════════
 
         private void OnNextQuiz(object? sender, EventArgs e)
         {
@@ -394,9 +382,7 @@ namespace CybersecurityChatbot.GUI
             LoadRound(_currentRound);
         }
 
-        // ════════════════════════════════════════════════════════════════
         // FINAL RESULTS
-        // ════════════════════════════════════════════════════════════════
 
         private void ShowFinalResults()
         {
@@ -443,9 +429,7 @@ namespace CybersecurityChatbot.GUI
             _exitButton.Visible = false;
         }
 
-        // ════════════════════════════════════════════════════════════════
         // EXIT CONFIRMATION
-        // ════════════════════════════════════════════════════════════════
 
         private void OnExitClicked(object? sender, EventArgs e)
         {
