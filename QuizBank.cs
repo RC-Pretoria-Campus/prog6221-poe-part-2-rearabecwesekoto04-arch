@@ -6,7 +6,7 @@
     /// </summary>
     public static class QuizBank
     {
-        // ─── Round 1: Cybersecurity Basics ───────────────────────────────
+        // Round 1: Cybersecurity Basics
         public static readonly Dictionary<int, QuizQuestion> Round1 =
             new Dictionary<int, QuizQuestion>
         {
@@ -82,7 +82,7 @@
             },
         };
 
-        // ─── Round 2: Threats & Attacks ──────────────────────────────────
+        // Round 2: Threats & Attacks
         public static readonly Dictionary<int, QuizQuestion> Round2 =
             new Dictionary<int, QuizQuestion>
         {
@@ -158,7 +158,7 @@
             },
         };
 
-        // ─── Round 3: Privacy & Best Practices ───────────────────────────
+        // Round 3: Privacy & Best Practices 
         public static readonly Dictionary<int, QuizQuestion> Round3 =
             new Dictionary<int, QuizQuestion>
         {
@@ -234,11 +234,11 @@
             },
         };
 
-        // ─── All Rounds as a List for iteration ──────────────────────────
+        // All Rounds as a List for iteration
         public static readonly List<Dictionary<int, QuizQuestion>> AllRounds =
             new List<Dictionary<int, QuizQuestion>> { Round1, Round2, Round3 };
 
-        // ─── Round Titles Dictionary ──────────────────────────────────────
+        // Round Titles Dictionary
         public static readonly List<string> RoundTitles = new List<string>
         {
             "Round 1 — Cybersecurity Basics",
