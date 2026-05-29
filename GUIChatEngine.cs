@@ -13,31 +13,31 @@ namespace CybersecurityChatbot.Core
     /// </summary>
     public class GUIChatEngine
     {
-        // ─── State Machine ───────────────────────────────────────────────
+        // State Machine
         public enum ChatState { AwaitingName, AwaitingFavTopic, Active }
         public ChatState State { get; private set; } = ChatState.AwaitingName;
 
-        // ─── User Memory ─────────────────────────────────────────────────
+        // User Memory
         public string UserName { get; private set; } = string.Empty;
         public string FavouriteTopic { get; private set; } = string.Empty;
 
-        // ─── Conversation Context ─────────────────────────────────────────
+        // Conversation Context 
         private string _lastTopic = string.Empty;
         private string _lastResponse = string.Empty;
         private int _tipIndex = 0;
 
-        // ─── History (Dictionary: label → message) ────────────────────────
+        // History (Dictionary: label → message) 
         private readonly Dictionary<string, string> _conversationHistory = new();
         private int _historyIndex = 1;
 
-        // ─── Topic Number Map ─────────────────────────────────────────────
+        // Topic Number Map 
         private readonly Dictionary<int, string> _topicNumberMap = new();
 
-        // ─── Callbacks to GUI ─────────────────────────────────────────────
+        // Callbacks to GUI 
         private readonly Action<string> _appendBot;
         private readonly Action<string> _appendSystem;
 
-        // ─── Mood Keywords (Dictionary: keyword → mood label) ────────────
+        // Mood Keywords (Dictionary: keyword > mood label) 
         private readonly Dictionary<string, string> _moodKeywords =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -58,7 +58,7 @@ namespace CybersecurityChatbot.Core
             { "stressed",    "stressed"    },
         };
 
-        // ─── Mood-Only Responses (Dictionary: mood → full response) ──────
+        //  Mood-Only Responses (Dictionary: mood > full response)
         // Used when user expresses ONLY a mood with no cybersecurity topic.
         private readonly Dictionary<string, string> _moodOnlyResponses =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -146,7 +146,7 @@ namespace CybersecurityChatbot.Core
               "and enable 2FA if you haven't already. Tell me what's going on and I'll help." },
         };
 
-        // ─── Mood Prefixes (Dictionary: mood → short prefix for topic responses) ──
+        // Mood Prefixes (Dictionary: mood > short prefix for topic responses) 
         private readonly Dictionary<string, string> _moodPrefixes =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -167,7 +167,7 @@ namespace CybersecurityChatbot.Core
             { "stressed",    "Stay calm — here's exactly what you need: "                      },
         };
 
-        // ─── Random Response Pools (Dictionary: topic → List of responses) ──
+        // Random Response Pools (Dictionary: topic > List of responses)
         private readonly Dictionary<string, List<string>> _randomResponses =
             new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase)
         {
@@ -227,7 +227,7 @@ namespace CybersecurityChatbot.Core
             },
         };
 
-        // ─── Follow-up Phrases (List) ─────────────────────────────────────
+        // Follow-up Phrases (List)
         private readonly List<string> _followUpPhrases = new List<string>
         {
             "tell me more", "more", "another tip", "give me another tip",
@@ -235,11 +235,11 @@ namespace CybersecurityChatbot.Core
             "and then", "more info", "elaborate",
         };
 
-        // ─── Fallback Responses (List — rotated for variety) ─────────────
+        // Fallback Responses (List — rotated for variety) 
         private readonly List<string> _fallbacks;
         private int _fallbackIndex = 0;
 
-        // ─── Constructor ─────────────────────────────────────────────────
+        // Constructor 
         public GUIChatEngine(Action<string> appendBot, Action<string> appendSystem)
         {
             _appendBot = appendBot;
@@ -257,16 +257,15 @@ namespace CybersecurityChatbot.Core
 
         public void SetState(ChatState state) => State = state;
 
-        // ════════════════════════════════════════════════════════════════
         // MAIN PROCESS
-        // ════════════════════════════════════════════════════════════════
+       
 
         public string Process(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
                 return "I didn't catch that. Try typing 'help' for a list of commands.";
 
-            // ── State: Name collection ──
+            // State: Name collection
             if (State == ChatState.AwaitingName)
             {
                 UserName = input.Trim().Length > 0 ? CapitaliseName(input.Trim()) : "User";
@@ -277,7 +276,7 @@ namespace CybersecurityChatbot.Core
                        $"This helps me personalise your experience!";
             }
 
-            // ── State: Favourite topic collection ──
+            // State: Favourite topic collection
             if (State == ChatState.AwaitingFavTopic)
             {
                 FavouriteTopic = input.Trim();
@@ -292,16 +291,15 @@ namespace CybersecurityChatbot.Core
                 return reply;
             }
 
-            // ── Active chat ──
+            // Active chat
             LogHistory(UserName, input);
             string response = ProcessActive(input);
             LogHistory("Bot", response);
             return response;
         }
 
-        // ════════════════════════════════════════════════════════════════
+        
         // ACTIVE PROCESSING
-        // ════════════════════════════════════════════════════════════════
 
         private string ProcessActive(string input)
         {
@@ -320,36 +318,36 @@ namespace CybersecurityChatbot.Core
                     : $"Please enter a number between 1 and {_topicNumberMap.Count}.";
             }
 
-            // ── Commands (via dictionary of delegates) ──
+            // Commands (via dictionary of delegates) 
             if (ResponseBank.Commands.ContainsKey(lower))
                 return HandleCommand(lower);
 
-            // ── Follow-up phrases ──
+            // Follow-up phrases 
             if (_followUpPhrases.Any(p => lower.Contains(p)))
                 return HandleFollowUp();
 
-            // ── Detect mood ──
+            // Detect mood
             string mood = DetectMood(lower);
 
-            // ── Memory recall triggers ──
+            // Memory recall triggers 
             if (lower.Contains("my favourite") || lower.Contains("what do i like") ||
                 lower.Contains("remember me"))
                 return HandleMemoryRecall();
 
-            // ── Conversational responses ──
+            // Conversational responses
             foreach (var entry in ResponseBank.ConversationalResponses)
                 if (lower.Contains(entry.Key.ToLower()))
                     return entry.Value;
 
-            // ── Pure mood (no topic detected) ──
+            // Pure mood (no topic detected)
             bool hasTopic = HasTopicKeyword(lower);
             if (!string.IsNullOrEmpty(mood) && !hasTopic)
                 return GetMoodOnlyResponse(mood);
 
-            // ── Mood prefix for topic responses ──
+            // Mood prefix for topic responses
             string prefix = !string.IsNullOrEmpty(mood) ? GetMoodPrefix(mood) : string.Empty;
 
-            // ── Random response pool (checked FIRST) ──
+            // Random response pool (checked FIRST) 
             foreach (var topic in _randomResponses.Keys)
             {
                 if (lower.Contains(topic.ToLower()))
@@ -361,7 +359,7 @@ namespace CybersecurityChatbot.Core
                 }
             }
 
-            // ── Keyword bank (checked AFTER random pool) ──
+            // Keyword bank (checked AFTER random pool) 
             foreach (var entry in ResponseBank.KeywordResponses)
             {
                 if (lower.Contains(entry.Key.ToLower()))
@@ -372,13 +370,11 @@ namespace CybersecurityChatbot.Core
                 }
             }
 
-            // ── Fallback ──
+            // Fallback
             return string.IsNullOrEmpty(mood) ? GetFallback() : GetMoodOnlyResponse(mood);
         }
 
-        // ════════════════════════════════════════════════════════════════
         // COMMAND HANDLERS (Dictionary of Delegates)
-        // ════════════════════════════════════════════════════════════════
 
         private string HandleCommand(string command)
         {
@@ -451,9 +447,7 @@ namespace CybersecurityChatbot.Core
             return "Conversation history cleared.";
         }
 
-        // ════════════════════════════════════════════════════════════════
         // FOLLOW-UP / CONVERSATION FLOW
-        // ════════════════════════════════════════════════════════════════
 
         private string HandleFollowUp()
         {
@@ -475,9 +469,7 @@ namespace CybersecurityChatbot.Core
                    $"Type 'topics' to explore another subject!";
         }
 
-        // ════════════════════════════════════════════════════════════════
         // MEMORY RECALL
-        // ════════════════════════════════════════════════════════════════
 
         private string HandleMemoryRecall()
         {
@@ -492,9 +484,7 @@ namespace CybersecurityChatbot.Core
                    $"accounts related to {FavouriteTopic}.";
         }
 
-        // ════════════════════════════════════════════════════════════════
         // MOOD HELPERS
-        // ════════════════════════════════════════════════════════════════
 
         /// <summary>Returns detected mood label or empty string.</summary>
         private string DetectMood(string input)
@@ -530,9 +520,7 @@ namespace CybersecurityChatbot.Core
             return false;
         }
 
-        // ════════════════════════════════════════════════════════════════
         // GENERAL HELPERS
-        // ════════════════════════════════════════════════════════════════
 
         /// <summary>Returns a random response from the pool for the given topic.</summary>
         private string GetRandomResponse(string topic)
